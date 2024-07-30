@@ -1,8 +1,9 @@
+import os
 import PySimpleGUI as sg
 import display_layout
 from image_transform import(
     update_image, handle_error, load_image, resize_image, convert_grayscale, rotate_image,
-    flip_image, mirror_image, mosaic_image, reset_image, resize_image, save_image
+    flip_image, mirror_image, mosaic_image, reset_image, resize_image, save_image, compress_images_in_directory
 )
 
 #GUIタイトルと全体レイアウトをのせたWindowを定義。
@@ -16,6 +17,24 @@ tmp_image = None
 while True:
     # ウィンドウ表示
     event, values = window.read()
+    """
+    if event == "圧縮":
+        directory = values["-FOLDER-"]
+        if directory:
+            output_directory = os.path.join(directory, "compressed")
+            compress_images_in_directory(directory, output_directory, quality=85)
+            sg.popup("画像の圧縮が完了しました。")
+    
+    """
+    
+    if event == "圧縮":
+        #directory = sg.popup_get_folder("圧縮するディレクトリを選択してください")
+        directory = values["-FOLDER-"]
+        if directory:
+            output_directory = os.path.join(directory, "compressed")
+            compress_images_in_directory(directory, output_directory, quality=20)
+            sg.popup("画像の圧縮が完了しました。")
+    
     
     """   元画像を表示するプログラム   """
     if event == "-FILE-":
@@ -24,6 +43,12 @@ while True:
             original_image, tmp_image = load_image(image_file)
             update_image(original_image, "-ORIGINAL-", window)
 
+    if event == "-FOLDER-":
+        folder_path = values["-FOLDER-"]
+        if folder_path:
+            True
+            #sg.popup(f"{folder_path}")
+    
     if event == "サイズ変更":
         new_image = resize_image(tmp_image)
         if new_image:
@@ -68,7 +93,7 @@ while True:
     
     if event == "保存":
         save_image(tmp_image, original_image)
-        
+            
     if event == "終了" or event is None:
         break
 
